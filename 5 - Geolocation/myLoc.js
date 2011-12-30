@@ -1,10 +1,27 @@
 window.onload = getMyLocation;
 
+var map; // global map variable for Google Maps
+var watchId = null; // needed for clearing watchLocation
+
 function getMyLocation() {
 	if (navigator.geolocation) {
-		navigator.geolocation.getCurrentPosition(displayLocation, displayError);
+		var watchButton = document.getElementById("watch");
+		watchButton.onclick = watchLocation;
+		var clearWatchButton = document.getElementById("clearWatch");
+		clearWatchButton.onclick = clearWatch;
 	} else {
 		alert("Oops, no geolocation support!");
+	}
+}
+
+function watchLocation() {
+	watchId = navigator.geolocation.watchPosition(displayLocation, displayError);
+}
+
+function clearWatch() {
+	if (watchId) {
+		navigator.geolocation.clearWatch(watchId);
+		watchId = null;
 	}
 }
 
@@ -23,7 +40,12 @@ function displayLocation(position) {
 	distance.innerHTML = "You are " + km + " km apart from the WickedlySmart HQ";
 	
 	// this part is responsible for displaying the user position on a map from Google Maps
-	showMap(position.coords);
+	// originally this was only the showMap function, but it had to be put into the "if"
+	// statement because of the implementation of the tracking (it has to be made sure
+	// that the map is only drawn once).
+	if (map == null) {
+		showMap(position.coords)
+	}
 } 
 
 function displayError(error){
@@ -68,8 +90,6 @@ var ourCoords = {
 	longitude: -122.52099
 }
 
-// global map variable for Google Maps
-var map;
 
 function showMap(coords) {
 	// initialize arguments for Google Maps
