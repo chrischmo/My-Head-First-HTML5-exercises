@@ -15,6 +15,7 @@ function displayLocation(position) {
 	// shows the user's position
 	var div = document.getElementById("location");
 	div.innerHTML = "You are at Latitude: " + latitude + ", Logitude: " + longitude;
+	div.innerHTML += " (with " + position.coords.accuracy + " meters accuracy)"; 
 	
 	// added this part to display the distance to WickedlySmart HQ
 	var km = computeDistance(position.coords, ourCoords);
